@@ -2,7 +2,6 @@ import Phaser from "phaser";
 import initAnimations from "./playerAnims"
 
 class Player extends Phaser.Physics.Arcade.Sprite {
-
   constructor(scene, x, y) {
     super(scene, x, y, 'player');
 
@@ -15,14 +14,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
   init() {
     this.gravity = 500;
-    this.playerSpeed = 200;
+    this.playerSpeed = 150;
+    this.jumpCount = 0;
+    this.consecutiveJumps = 1;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
     this.body.setGravityY(500); // set so the player will fill in Y direction
     this.setCollideWorldBounds(true);
-
     initAnimations(this.scene.anims)
-
   }
 
   initEvents() {
@@ -30,7 +29,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    const { left, right } = this.cursors;
+    const { left, right, space, up } = this.cursors;
+    // This justDown value allows you to test if thie key has just been pressed down or not.
+    const isSpaceJustDown = Phaser.Input.Keyboard.JustDown(space);
+    const isUpJustDown = Phaser.Input.Keyboard.JustDown(up);
+    const onFloor = this.body.onFloor()
+
     if (left.isDown) {
       this.setVelocityX(-this.playerSpeed);
       this.setFlipX(true);
@@ -40,12 +44,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     } else {
       this.setVelocityX(0);
     }
-
-    // Don't play it again if it's already playing
-    // Second value (true) -> igonreIfPlaying
-    this.body.velocity.x !== 0 ?
-      this.play('run', true) : this.play('idle', true);
-
+    if ((isSpaceJustDown || isUpJustDown) && (onFloor || this.jumpCount < this.consecutiveJumps)) {
+      // Becase we've set the body of the player with gravity, so after space up, player will fall into ground again
+      this.setVelocityY(-this.playerSpeed * 2)
+      this.jumpCount++
+    }
+    if (onFloor) {
+      // Don't play it again if it's already playing
+      // Second value (true) -> igonreIfPlaying
+      this.jumpCount = 0
+      this.body.velocity.x !== 0 ?
+        this.play('run', true) : this.play('idle', true);
+    } else {
+      this.play('jump', true)
+    }
   }
 }
 
