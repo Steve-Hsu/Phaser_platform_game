@@ -9,7 +9,8 @@ class Play extends Phaser.Scene {
   create() {
     const map = this.createMap();
     const layers = this.createLayers(map);
-    const player = this.createPlayer();
+    const playerZones = this.getPlayerZones(layers.playerZones);
+    const player = this.createPlayer(playerZones);
 
     this.createPlayerColliders(player, {
       colliders: {
@@ -31,17 +32,19 @@ class Play extends Phaser.Scene {
     const platformsColliers = map.createStaticLayer('platforms_colliders', titleset1);
     const environment = map.createStaticLayer('environment', titleset1);
     const platforms = map.createStaticLayer('platforms', titleset1);
+    const playerZones = map.getObjectLayer('player_zones');
 
 
     // Make collision
     // platformsColliers.setCollisionByExclusion(-1, true); // standard code
     platformsColliers.setCollisionByProperty({ collider: true }); // Only when we set the tile with custom property
 
-    return { environment, platforms, platformsColliers }
+    return { environment, platforms, platformsColliers, playerZones }
   }
 
-  createPlayer() {
-    return new Player(this, 100, 250);
+  createPlayer({ start }) {
+
+    return new Player(this, start.x, start.y);
   }
 
   createPlayerColliders(target, { colliders }) {
@@ -55,6 +58,15 @@ class Play extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, width + mapOffset, height).setZoom(zoomFactor)
     this.cameras.main.startFollow(player);
   }
+
+  getPlayerZones(playerZonesLayer) {
+    const playerZones = playerZonesLayer.objects;
+    return {
+      start: playerZones.find(zone => zone.name === 'StartPoint'),
+      end: playerZones.find(zone => zone.name === 'EndPoint')
+    }
+  }
+
 }
 
 export default Play;

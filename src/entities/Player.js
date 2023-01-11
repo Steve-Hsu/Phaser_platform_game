@@ -28,7 +28,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.body.setGravityY(500); // set so the player will fill in Y direction
     this.setCollideWorldBounds(true);
-    initAnimations(this.scene.anims)
+    this.setOrigin(0.5, 1); // for match the playerZone's object
+    initAnimations(this.scene.anims);
   }
 
   initEvents() {
