@@ -196,11 +196,17 @@
          "name":"enemy_spawns",
          "objects":[
                 {
-                 "class":"birdman",
+                 "class":"Birdman",
                  "height":0,
                  "id":3,
-                 "name":"spawn",
+                 "name":"Spawn",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"Birdman"
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":0,
@@ -208,11 +214,17 @@
                  "y":329
                 }, 
                 {
-                 "class":"",
+                 "class":"Birdman",
                  "height":0,
                  "id":4,
-                 "name":"",
+                 "name":"Spawn",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"Birdman"
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":0,
@@ -220,11 +232,17 @@
                  "y":201
                 }, 
                 {
-                 "class":"",
+                 "class":"Birdman",
                  "height":0,
                  "id":5,
-                 "name":"",
+                 "name":"Spawn",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"Birdman"
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":0,
