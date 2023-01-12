@@ -15,6 +15,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     Object.assign(this, collidable);
 
     this.init();
+    this.initEvents();
   }
 
   init() {
@@ -31,6 +32,15 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
     this.setImmovable(true); // After collider, this object don't slide away
     this.setOrigin(0.5, 1); // for match the playerZone's object
+  }
+
+  initEvents() {
+    // Listening to the update scene function from PlayScene
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this)
+  }
+
+  update(time, delta) {
+    this.setVelocityX(20);
   }
 }
 
