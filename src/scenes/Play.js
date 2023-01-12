@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import Player from '../entities/Player';
-import Enemies from '../entities/groups/Enemies';
+import Enemies from '../groups/Enemies';
 
 class Play extends Phaser.Scene {
   constructor(config) {
