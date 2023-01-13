@@ -22,6 +22,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.gravity = 500;
     this.speed = 150;
     this.health = 100;
+    this.platformCollidersLayer = null;
     this.rayGraphics = this.scene.add.graphics({ lineStyle: { width: 2, color: 0xaa00aa } });
 
     this.body.setGravityY(500); // set so the player will fill in Y direction
@@ -42,21 +43,38 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
   update(time, delta) {
     this.setVelocityX(20);
-    const { ray } = this.raycast(this.body);
+    const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer);
+
+    if (hasHit) {
+      console.log('Hitting the platform!')
+    }
 
     this.rayGraphics.clear();
     this.rayGraphics.strokeLineShape(ray);
   }
 
-  raycast(body, raylength = 30) {
+  setPlatformColliders(platformCollidersLayer) {
+    this.platformCollidersLayer = platformCollidersLayer;
+
+  }
+
+  raycast(body, layer, raylength = 40) {
     const { x, y, width, halfHeight } = body;
     const line = new Phaser.Geom.Line();
+    let hasHit = false;
 
     line.x1 = x + width;
     line.y1 = y + halfHeight;
     line.x2 = line.x1 + raylength;
     line.y2 = line.y1 + raylength;
-    return { ray: line }
+
+    const hits = layer.getTilesWithinShape(line);
+
+    if (hits.length > 0) {
+      hasHit = hits.some(hit => hit.index !== -1); // pure JS map function some()
+    }
+
+    return { ray: line, hasHit }
   }
 }
 
