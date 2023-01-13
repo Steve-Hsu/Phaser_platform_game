@@ -30,25 +30,39 @@ class Play extends Phaser.Scene {
     this.setupFollowupCameraOn(player);
 
     // Drawing lines setting for cast Ray
+    this.plotting = false;
     this.graphics = this.add.graphics();
     this.line = new Phaser.Geom.Line();
     this.graphics.lineStyle(1, 0x00ff00);
 
     this.input.on('pointerdown', this.startDrawing, this); // mouse click down
-    this.input.on('pointerup', this.finishDrawing, this); // mouse stop click
+    this.input.on('pointerup', (pointer) => this.finishDrawing(pointer, layers.platforms), this); // mouse stop click
 
   }
 
   startDrawing(pointer) {
     this.line.x1 = pointer.worldX;
     this.line.y1 = pointer.worldY;
+    this.plotting = true;
   }
 
-  finishDrawing(pointer) {
+  finishDrawing(pointer, layer) {
     this.line.x2 = pointer.worldX;
     this.line.y2 = pointer.worldY;
-
+    this.graphics.clear(); // clear all the previous lines, so don't duplicated when quick double click
     this.graphics.strokeLineShape(this.line);
+
+    this.tileHits = layer.getTilesWithinShape(this.line);
+
+    if (this.tileHits.length > 0) {
+      this.tileHits.forEach(tile => {
+        if (tile.index !== -1) {
+          console.log('I have hit the platform')
+        }
+      })
+    }
+
+    this.plotting = false;
   }
 
   createMap() {
@@ -126,6 +140,17 @@ class Play extends Phaser.Scene {
       eolOverlap.active = false;
       console.log('Player has won')
     })
+  }
+  update() {
+    if (this.plotting) {
+      const pointer = this.input.activePointer;
+
+      this.line.x2 = pointer.worldX;
+      this.line.y2 = pointer.worldY;
+      this.graphics.clear(); // clear all the previous lines, so don't duplicated line when hold down mouse click
+      this.graphics.strokeLineShape(this.line);
+
+    }
   }
 }
 
