@@ -22,6 +22,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.gravity = 500;
     this.speed = 150;
     this.health = 100;
+    this.rayGraphics = this.scene.add.graphics({ lineStyle: { width: 2, color: 0xaa00aa } });
 
     this.body.setGravityY(500); // set so the player will fill in Y direction
     this.setSize(this.width, 45); // set the size of body, which is a area can be collider
@@ -41,6 +42,21 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
   update(time, delta) {
     this.setVelocityX(20);
+    const { ray } = this.raycast(this.body);
+
+    this.rayGraphics.clear();
+    this.rayGraphics.strokeLineShape(ray);
+  }
+
+  raycast(body, raylength = 30) {
+    const { x, y, width, halfHeight } = body;
+    const line = new Phaser.Geom.Line();
+
+    line.x1 = x + width;
+    line.y1 = y + halfHeight;
+    line.x2 = line.x1 + raylength;
+    line.y2 = line.y1 + raylength;
+    return { ray: line }
   }
 }
 

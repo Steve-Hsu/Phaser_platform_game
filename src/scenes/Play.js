@@ -28,35 +28,6 @@ class Play extends Phaser.Scene {
     })
     this.createEndOfLevel(playerZones.end, player);
     this.setupFollowupCameraOn(player);
-
-    // Drawing lines setting for cast Ray
-    this.plotting = false;
-    this.graphics = this.add.graphics();
-    this.line = new Phaser.Geom.Line();
-    this.graphics.lineStyle(1, 0x00ff00);
-
-    this.input.on('pointerdown', this.startDrawing, this); // mouse click down
-    this.input.on('pointerup', (pointer) => this.finishDrawing(pointer, layers.platforms), this); // mouse stop click
-
-  }
-
-  drawDebug(layer) {
-    const collidingTileColor = new Phaser.Display.Color(0, 134, 48, 200);
-    layer.renderDebug(this.graphics, {
-      tileColor: null,
-      collidingTileColor
-    })
-  }
-
-  startDrawing(pointer) {
-    if (this.tileHits && this.tileHits.length > 0) {
-      this.tileHits.forEach(tile => {
-        tile.index !== -1 && tile.setCollision(false)
-      })
-    }
-    this.line.x1 = pointer.worldX;
-    this.line.y1 = pointer.worldY;
-    this.plotting = true;
   }
 
   finishDrawing(pointer, layer) {
@@ -152,17 +123,6 @@ class Play extends Phaser.Scene {
       eolOverlap.active = false;
       console.log('Player has won')
     })
-  }
-  update() {
-    if (this.plotting) {
-      const pointer = this.input.activePointer;
-
-      this.line.x2 = pointer.worldX;
-      this.line.y2 = pointer.worldY;
-      this.graphics.clear(); // clear all the previous lines, so don't duplicated line when hold down mouse click
-      this.graphics.strokeLineShape(this.line);
-
-    }
   }
 }
 
