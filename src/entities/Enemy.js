@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-
 import collidable from "../mixins/collidable";
 
 class Enemy extends Phaser.Physics.Arcade.Sprite {
@@ -21,11 +20,11 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   init() {
     this.gravity = 500;
     this.speed = 150;
+    this.timeFromLastTurn = 0;
     this.health = 100;
     this.platformCollidersLayer = null;
     this.rayGraphics = this.scene.add.graphics({ lineStyle: { width: 2, color: 0xaa00aa } });
-
-    this.body.setGravityY(500); // set so the player will fill in Y direction
+    this.body.setGravityY(this.gravity); // set so the player will fill in Y direction
     this.setSize(this.width, 45); // set the size of body, which is a area can be collider
 
     // setOffset() : cut the unnecessay space in the character frame.
@@ -34,19 +33,19 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
     this.setImmovable(true); // After collider, this object don't slide away
     this.setOrigin(0.5, 1); // for match the playerZone's object
+    this.setVelocityX(this.speed); // Walking speed of Enemy
   }
-
   initEvents() {
     // Listening to the update scene function from PlayScene
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this)
   }
-
   update(time, delta) {
-    this.setVelocityX(20);
-    const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, 40, 10);
+    const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, 50, 1);
 
-    if (hasHit) {
-      // console.log('Hitting the platform!');
+    if (!hasHit && this.timeFromLastTurn + 100 < time) {
+      this.setFlipX(!this.flipX); // flip the image
+      this.setVelocityX(this.speed = -this.speed) // It basically walk backward
+      this.timeFromLastTurn = time;
     }
 
     this.rayGraphics.clear();
