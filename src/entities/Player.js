@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import initAnimations from "./anims/playerAnims";
 import collidable from "../mixins/collidable";
 import HealthBar from "../hud/Healthbar";
+import anims from "../mixins/anims";
 import Projectiles from "../attacks/Projectiles";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
@@ -15,6 +16,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // Copy the values of all of the enumerable own properties from one or more source objects 
     // to a target object. return the target object
     Object.assign(this, collidable);
+    Object.assign(this, anims);
 
     this.init();
     this.initEvents();
@@ -32,6 +34,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
     this.projectiles = new Projectiles(this.scene);
 
+    // for me to treat bug of this.anims.getCurrentKey(), cannot find the function 
+    this.isThrow = false
+
     this.health = 100;
     this.hp = new HealthBar(
       this.scene,
@@ -47,8 +52,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     initAnimations(this.scene.anims);
 
     this.scene.input.keyboard.on('keydown-Q', () => {
-      console.log("QKey")
-      this.projectiles.fireProjectile(this)
+
+      this.play('throw', true);
+      // console.log("check", this.anims)
+      this.projectiles.fireProjectile(this);
+      this.isThrow = true
     })
   }
 
@@ -80,15 +88,25 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.setVelocityY(-this.playerSpeed * 2)
       this.jumpCount++
     }
+
+    // Origin code, but can find the "this.anims.getCurrentKey()"
+    // if (this.anims.isPlayingAnims && this.anims.getCurrentKey() === 'throw') {
+    //   return;
+    // }
+    if (this.anims.isPlaying && this.isThrow) return;
+    this.isThrow = false // turn back to default
+
+    // Don't play it again if it's already playing
+    // Second value (true) -> igonreIfPlaying
     if (onFloor) {
-      // Don't play it again if it's already playing
-      // Second value (true) -> igonreIfPlaying
       this.jumpCount = 0
       this.body.velocity.x !== 0 ?
         this.play('run', true) : this.play('idle', true);
     } else {
       this.play('jump', true)
     }
+
+
   }
 
   playDamageTween() {
