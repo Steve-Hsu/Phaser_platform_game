@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import initAnimations from "./anims/playerAnims";
 import collidable from "../mixins/collidable";
 import HealthBar from "../hud/Healthbar";
+import Projectile from "../attacks/Projectile";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -40,6 +41,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
     this.setOrigin(0.5, 1); // for match the playerZone's object
     initAnimations(this.scene.anims);
+
+    this.scene.input.keyboard.on('keydown-Q', () => {
+      console.log("QKey")
+      const projectile = new Projectile(this.scene, this.x, this.y, 'iceball');
+      projectile.fire();
+    })
   }
 
   initEvents() {
