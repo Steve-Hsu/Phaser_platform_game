@@ -69,6 +69,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  takesHit(initiator) {
+    console.log("eee", initiator)
+  }
 
 }
 

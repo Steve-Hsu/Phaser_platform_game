@@ -88,6 +88,9 @@ class Play extends Phaser.Scene {
     return enemies;
   }
 
+  onPlayerCollision(enemy, player) {
+    player.takesHit(enemy)
+  }
 
   createPlayerColliders(target, { colliders }) {
     target
@@ -97,7 +100,7 @@ class Play extends Phaser.Scene {
   createEnemyColliders(targets, { colliders }) {
     targets
       .addCollider(colliders.platformsColliers)
-      .addCollider(colliders.player)
+      .addCollider(colliders.player, this.onPlayerCollision)
   }
 
   setupFollowupCameraOn(player) {
