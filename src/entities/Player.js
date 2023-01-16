@@ -1,7 +1,7 @@
 import Phaser from "phaser";
-import initAnimations from "./anims/playerAnims"
-
+import initAnimations from "./anims/playerAnims";
 import collidable from "../mixins/collidable";
+import HealthBar from "../hud/Healthbar";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -27,6 +27,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.hasBeenHit = false;
     this.bounceVelocity = 250;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
+    this.health = 100;
+    this.hp = new HealthBar(
+      this.scene,
+      this.scene.config.leftTopCorner.x,
+      this.scene.config.leftTopCorner.y,
+      this.health);
 
     this.body.setSize(20, 36); // Set the collider area
     this.body.setGravityY(500); // set so the player will fill in Y direction
