@@ -16,7 +16,8 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     super.preUpdate(time, delta);
 
     this.traveleDistance += this.body.deltaAbsX();
-    if (this.traveleDistance >= this.maxDistance) {
+    if (this.isOutOfRange()) {
+      this.body.reset(0, 0);
       this.setActive(false);
       this.setVisible(false);
       this.traveleDistance = 0;
@@ -28,6 +29,11 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.setVisible(true);
     this.body.reset(x, y);
     this.setVelocityX(this.speed);
+  }
+
+  isOutOfRange() {
+    return this.traveleDistance &&
+      this.traveleDistance >= this.maxDistance;
   }
 }
 
