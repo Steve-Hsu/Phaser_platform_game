@@ -24,6 +24,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.playerSpeed = 150;
     this.jumpCount = 0;
     this.consecutiveJumps = 1;
+    this.hasBeenHit = false;
+    this.bounceVelocity = 250;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
     this.body.setSize(20, 36); // Set the collider area
@@ -38,6 +40,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
+    if (this.hasBeenHit) { return; };
     const { left, right, space, up } = this.cursors;
     // This justDown value allows you to test if thie key has just been pressed down or not.
     const isSpaceJustDown = Phaser.Input.Keyboard.JustDown(space);
@@ -69,8 +72,32 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  bounceOff() {
+    this.body.touching.right ?
+      this.setVelocityX(-this.bounceVelocity) :
+      this.setVelocityX(this.bounceVelocity);
+
+    // this.setVelocityY(-this.bounceVelocity)
+
+    setTimeout(() => {
+      this.setVelocityY(-this.bounceVelocity) // Player got hit and jump back a little, here is the jump of jump back
+    }, 0)
+  }
+
   takesHit(initiator) {
-    console.log("eee", initiator)
+    if (this.hasBeenHit) { return; }
+    this.hasBeenHit = true;
+    this.bounceOff();
+
+    // this.scene.time.addEvent({
+    //   delay: 1000,
+    //   callback: () => {
+    //     this.hasBeenHit = false;
+    //   },
+    //   loop: false
+    // })
+    // More neat way above code
+    this.scene.time.delayedCall(1000, () => this.hasBeenHit = false)
   }
 
 }
