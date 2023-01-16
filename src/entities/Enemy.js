@@ -21,6 +21,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.gravity = 500;
     this.speed = 150;
     this.timeFromLastTurn = 0;
+    this.maxPatrolDistance = 500;
+    this.currentPatrolDistance = 0;
     this.health = 100;
     this.platformCollidersLayer = null;
     this.rayGraphics = this.scene.add.graphics({ lineStyle: { width: 2, color: 0xaa00aa } });
@@ -40,12 +42,24 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this)
   }
   update(time, delta) {
+    this.patrol(time)
+  }
+
+
+
+  patrol(time, delta) {
+
+    if (!this.body || !this.body.onFloor()) { return; } // A seft check if don't have this enemy body, just return null;
+
+    this.currentPatrolDistance += Math.abs(this.body.deltaX())
     const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, 50, 1);
 
-    if (!hasHit && this.timeFromLastTurn + 100 < time) {
+    if ((!hasHit || this.currentPatrolDistance >= this.maxPatrolDistance)
+      && this.timeFromLastTurn + 100 < time) {
       this.setFlipX(!this.flipX); // flip the image
       this.setVelocityX(this.speed = -this.speed) // It basically walk backward
       this.timeFromLastTurn = time;
+      this.currentPatrolDistance = 0
     }
 
     this.rayGraphics.clear();
