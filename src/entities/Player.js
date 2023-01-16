@@ -30,8 +30,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.health = 100;
     this.hp = new HealthBar(
       this.scene,
-      this.scene.config.leftTopCorner.x,
-      this.scene.config.leftTopCorner.y,
+      this.scene.config.leftTopCorner.x + 5,
+      this.scene.config.leftTopCorner.y + 5,
+      2,
       this.health);
 
     this.body.setSize(20, 36); // Set the collider area
@@ -105,6 +106,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.hasBeenHit = true;
     this.bounceOff();
     const hitAnim = this.playDamageTween();
+
+    this.health -= initiator.damage;
+    this.hp.decrease(this.health);
 
     // this.scene.time.addEvent({
     //   delay: 1000,
