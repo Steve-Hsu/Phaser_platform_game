@@ -52,7 +52,12 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     if (!this.body || !this.body.onFloor()) { return; } // A seft check if don't have this enemy body, just return null;
 
     this.currentPatrolDistance += Math.abs(this.body.deltaX())
-    const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, 50, 1);
+    const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, {
+      raylength: 40, precision: 10, steepens: 1
+    });
+    // raylength = the length of the detect ray attached on the enemy body
+    // Precision = the time to trigger a gain the detect ray, smaller the num, more precision you get
+    // steepens = the angle of the detect ray, 1 = 45 degree toward bottom front, 0 = 90 degree, straigt down
 
     if ((!hasHit || this.currentPatrolDistance >= this.maxPatrolDistance)
       && this.timeFromLastTurn + 100 < time) {
