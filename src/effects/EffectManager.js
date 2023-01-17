@@ -4,8 +4,8 @@ class EffecManager {
   constructor(scene) {
     this.scene = scene
   }
-  playEffectOn(effectName, target) {
-    const effect = new SpriteEffect(this.scene, 0, 0, effectName);
+  playEffectOn(effectName, target, impactPosition) {
+    const effect = new SpriteEffect(this.scene, 0, 0, effectName, impactPosition);
     effect.playOn(target);
   }
 

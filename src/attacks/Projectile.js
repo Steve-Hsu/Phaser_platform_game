@@ -15,6 +15,8 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.damage = 10;
     this.cooldown = 500;
 
+    this.body.setSize(this.width - 13, this.height - 20);
+
     this.effectManager = new EffecManager(this.scene)
   }
 
@@ -38,9 +40,10 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
   deliversHit(target) {
     this.activateProjectile(false);
     this.traveleDistance = 0;
+    const impactPosition = { x: this.x, y: this.y }
     this.body.reset(0, 0);
     // Effect Manage will be responsible for creating effect and displaying it
-    this.effectManager.playEffectOn('hit-effect', target)
+    this.effectManager.playEffectOn('hit-effect', target, impactPosition)
   }
 
   activateProjectile(isActive) {
