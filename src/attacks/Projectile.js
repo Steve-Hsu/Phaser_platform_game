@@ -11,6 +11,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.maxDistance = 300;
     this.traveleDistance = 0;
 
+    this.damage = 10;
     this.cooldown = 500;
   }
 
@@ -20,17 +21,26 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.traveleDistance += this.body.deltaAbsX();
     if (this.isOutOfRange()) {
       this.body.reset(0, 0);
-      this.setActive(false);
-      this.setVisible(false);
+      this.activateProjectile(false)
       this.traveleDistance = 0;
     }
   }
 
   fire(x, y) {
-    this.setActive(true);
-    this.setVisible(true);
+    this.activateProjectile(true);
     this.body.reset(x, y);
     this.setVelocityX(this.speed);
+  }
+
+  deliversHit(target) {
+    this.activateProjectile(false);
+    this.traveleDistance = 0;
+    this.body.reset(0, 0);
+  }
+
+  activateProjectile(isActive) {
+    this.setActive(isActive);
+    this.setVisible(isActive);
   }
 
   isOutOfRange() {
