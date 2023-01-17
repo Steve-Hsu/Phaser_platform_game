@@ -4,6 +4,7 @@ import collidable from "../mixins/collidable";
 import HealthBar from "../hud/Healthbar";
 import anims from "../mixins/anims";
 import Projectiles from "../attacks/Projectiles";
+import MeleeWeapon from "../attacks/MeleeWeapon";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -33,6 +34,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
     this.projectiles = new Projectiles(this.scene);
+    this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, 'sword-default')
 
     // for me to treat bug of this.anims.getCurrentKey(), cannot find the function 
     this.isThrow = false
@@ -54,9 +56,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.input.keyboard.on('keydown-Q', () => {
 
       this.play('throw', true);
-      // console.log("check", this.anims)
       this.projectiles.fireProjectile(this);
       this.isThrow = true
+    })
+
+    this.scene.input.keyboard.on('keydown-E', () => {
+      console.log("melee");
+      this.play('throw', true);
+      this.isThrow = true
+      this.meleeWeapon.swing(this);
     })
   }
 
