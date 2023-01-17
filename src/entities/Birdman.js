@@ -11,6 +11,7 @@ class Birdman extends Enemy {
   }
   update(time, delta) {
     super.update(time, delta);
+    if (!this.active) return; // Prevent calling a destroyed Enemy body, when the Enemy is terminated (destroyed)
     // if (this.isPlayingAnims()) return; // Have this.anims.getCurrentKey() bug, so here is original code of tutorial, we dont' use it here
     if (this.anims.isPlaying && this.isBridmanHurt) return;
     this.isBridmanHurt = false;

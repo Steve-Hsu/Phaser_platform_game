@@ -29,7 +29,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.maxPatrolDistance = 500;
     this.currentPatrolDistance = 0;
 
-    this.health = 40;
+    this.health = 20;
     this.damage = 20 // Enemy's attack to player
 
     this.platformCollidersLayer = null;
@@ -50,7 +50,18 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this)
   }
   update(time, delta) {
-    this.patrol(time)
+
+
+    // If the enemy's bottom is creater than the game frame, destory it, and clear data for this body for efficient the memory use
+    if (this.getBounds().bottom > 600) {
+
+      this.scene.events.removeListener(Phaser.Scenes.Events.UPDATE, this.update, this);
+      this.setActive(false)
+      this.rayGraphics.clear();
+      this.destroy();
+      return;
+    }
+    this.patrol(time);
   }
 
 
@@ -93,7 +104,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     source.deliversHit(this);
 
     if (this.health <= 0) {
-      console.log("Enemy is terminated")
+      this.setTint(0xff0000);
+      this.setVelocity(0, -200);
+      this.body.checkCollision.none = true;
+      this.setCollideWorldBounds(false);
     }
   }
 }
