@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import collidable from "../mixins/collidable";
+import anims from '../mixins/anims'
 
 class Enemy extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, key) {
@@ -14,6 +15,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     // Copy the values of all of the enumerable own properties from one or more source objects 
     // to a target object. return the target object
     Object.assign(this, collidable);
+    Object.assign(this, anims);
+
 
     this.init();
     this.initEvents();

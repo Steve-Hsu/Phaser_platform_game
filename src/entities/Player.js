@@ -90,7 +90,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     // Origin code, but can find the "this.anims.getCurrentKey()"
-    // if (this.anims.isPlayingAnims && this.anims.getCurrentKey() === 'throw') {
+    // if (this.anims.isPlaying && this.anims.getCurrentKey() === 'throw') {
     //   return;
     // }
     if (this.anims.isPlaying && this.isThrow) return;

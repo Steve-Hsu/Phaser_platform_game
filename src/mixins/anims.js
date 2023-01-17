@@ -1,5 +1,6 @@
 export default {
   isPlayingAnims(animsKey) {
-    return this.anims.isPlayingAnims && this.anims.getCurrentKey() === animsKey;
+    // Bug, this.anims.getCurrentKey() is not defined.
+    return this.anims.isPlaying && this.anims.getCurrentKey() === animsKey;
   }
 }
