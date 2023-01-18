@@ -21,12 +21,12 @@ class Snaky extends Enemy {
     this.attackDelay = this.getAttackDelay();
     this.lastDirection = null;
 
-    this.setSize(12, 45); // set the size of body, which is a area can be collider
+    this.setSize(16, 45); // set the size of body, which is a area can be collider
     // this.setSize(20, 45); // set the size of body, which is a area can be collider
 
     // setOffset() : cut the unnecessay space in the character frame.
     // In order to make the character image in the center of the collider body
-    this.setOffset(7, 20);
+    this.setOffset(10, 20);
   }
 
   update(time, delta) {

@@ -40,6 +40,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     // for me to treat bug of this.anims.getCurrentKey(), cannot find the function 
     this.isThrow = false
+    this.isDown = false
 
     this.health = 100;
     this.hp = new HealthBar(
@@ -54,24 +55,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
     this.setOrigin(0.5, 1); // for match the playerZone's object
     initAnimations(this.scene.anims);
-
-    this.scene.input.keyboard.on('keydown-Q', () => {
-
-      this.play('throw', true);
-      this.projectiles.fireProjectile(this, 'iceball');
-      this.isThrow = true
-    })
-
-    this.scene.input.keyboard.on('keydown-E', () => {
-
-      if (this.timeFromLastSwing
-        && this.timeFromLastSwing + this.meleeWeapon.attackSpeed > getTimestamp()) return;
-      console.log("melee");
-      this.play('throw', true);
-      this.isThrow = true
-      this.meleeWeapon.swing(this);
-      this.timeFromLastSwing = getTimestamp()
-    })
+    this.handleAttacks();
+    this.handleMovement();
   }
 
   initEvents() {
@@ -79,7 +64,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    if (this.hasBeenHit) { return; };
+    if (this.hasBeenHit || this.isDown) { return; }; // Prevent player can move right or left, while being hit or sliding(crouch down)
     const { left, right, space, up } = this.cursors;
     // This justDown value allows you to test if thie key has just been pressed down or not.
     const isSpaceJustDown = Phaser.Input.Keyboard.JustDown(space);
@@ -107,7 +92,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // if (this.anims.isPlaying && this.anims.getCurrentKey() === 'throw') {
     //   return;
     // }
-    if (this.anims.isPlaying && this.isThrow) return;
+
+
+    if (this.anims.isPlaying && this.isThrow || this.isDown) return;
     this.isThrow = false // turn back to default
 
     // Don't play it again if it's already playing
@@ -120,6 +107,42 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.play('jump', true)
     }
 
+
+  }
+
+  handleAttacks() {
+    this.scene.input.keyboard.on('keydown-Q', () => {
+
+      this.play('throw', true);
+      this.projectiles.fireProjectile(this, 'iceball');
+      this.isThrow = true
+    })
+
+    this.scene.input.keyboard.on('keydown-E', () => {
+
+      if (this.timeFromLastSwing
+        && this.timeFromLastSwing + this.meleeWeapon.attackSpeed > getTimestamp()) return;
+      console.log("melee");
+      this.play('throw', true);
+      this.isThrow = true
+      this.meleeWeapon.swing(this);
+      this.timeFromLastSwing = getTimestamp()
+    })
+  }
+
+  handleMovement() {
+    this.scene.input.keyboard.on('keydown-DOWN', () => {
+      this.body.setSize(this.width, this.height / 2);
+      this.setOffset(0, this.height / 2);
+      this.setVelocityX(0)
+      this.play('slide', true)
+      this.isDown = true;
+    })
+    this.scene.input.keyboard.on('keyup-DOWN', () => {
+      this.body.setSize(20, 38);
+      this.setOrigin(0.5, 1);
+      this.isDown = false
+    })
 
   }
 
@@ -153,7 +176,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.health -= source.damage;
     this.hp.decrease(this.health);
-    source.deliversHit(this); // Add effect when player got hit
+    // Add effect when player got hit by projectile, but when the source is enemy,
+    // And the enemy don't have custom FUNC: deliversHit, so here we check first prevent error
+    source.deliversHit && source.deliversHit(this);
 
     // this.scene.time.addEvent({
     //   delay: 1000,
