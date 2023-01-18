@@ -14,7 +14,10 @@ export default {
   prevRay: null,
   prevHasHit: null,
 
-  raycast(body, layer, { raylength = 40, precision = 0, steepns = 0 }) {
+  raycast(body, layer, { raylength = 30, precision = 0, steepns = 1 }) {
+    // raylength = the length of the detect ray attached on the enemy body
+    // Precision = the time to trigger a gain the detect ray, smaller the num, more precision you get
+    // steepens = the angle of the detect ray, 1 = 45 degree toward bottom front, 0 = 90 degree, straigt down
     const { x, y, width, halfHeight } = body;
 
     this.bodyPositionDifferenceX += body.x - body.prev.x;

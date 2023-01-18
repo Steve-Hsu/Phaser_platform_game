@@ -35,11 +35,6 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.platformCollidersLayer = null;
     this.rayGraphics = this.scene.add.graphics({ lineStyle: { width: 2, color: 0xaa00aa } });
     this.body.setGravityY(this.gravity); // set so the player will fill in Y direction
-    this.setSize(this.width, 45); // set the size of body, which is a area can be collider
-
-    // setOffset() : cut the unnecessay space in the character frame.
-    // In order to make the character image in the center of the collider body
-    this.setOffset(7, 20);
     this.setCollideWorldBounds(true);
     this.setImmovable(true); // After collider, this object don't slide away
     this.setOrigin(0.5, 1); // for match the playerZone's object
@@ -72,7 +67,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     this.currentPatrolDistance += Math.abs(this.body.deltaX())
     const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, {
-      raylength: 40, precision: 10, steepens: 1
+      raylength: 40, precision: 5, steepns: 0
     });
     // raylength = the length of the detect ray attached on the enemy body
     // Precision = the time to trigger a gain the detect ray, smaller the num, more precision you get

@@ -248,6 +248,24 @@
                  "width":0,
                  "x":1168,
                  "y":458
+                }, 
+                {
+                 "class":"Snaky",
+                 "height":0,
+                 "id":6,
+                 "name":"Spawn",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"Snaky"
+                        }],
+                 "rotation":0,
+                 "visible":true,
+                 "width":0,
+                 "x":529,
+                 "y":202
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -256,7 +274,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":6,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",
