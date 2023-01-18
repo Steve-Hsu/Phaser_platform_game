@@ -5,6 +5,7 @@ import HealthBar from "../hud/Healthbar";
 import anims from "../mixins/anims";
 import Projectiles from "../attacks/Projectiles";
 import MeleeWeapon from "../attacks/MeleeWeapon";
+import { getTimestamp } from "../utils/functions";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -34,7 +35,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
     this.projectiles = new Projectiles(this.scene);
-    this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, 'sword-default')
+    this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, 'sword-default');
+    this.timeFromLastSwing = null;
 
     // for me to treat bug of this.anims.getCurrentKey(), cannot find the function 
     this.isThrow = false
@@ -61,10 +63,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     })
 
     this.scene.input.keyboard.on('keydown-E', () => {
+
+      if (this.timeFromLastSwing
+        && this.timeFromLastSwing + this.meleeWeapon.attackSpeed > getTimestamp()) return;
       console.log("melee");
       this.play('throw', true);
       this.isThrow = true
       this.meleeWeapon.swing(this);
+      this.timeFromLastSwing = getTimestamp()
     })
   }
 
