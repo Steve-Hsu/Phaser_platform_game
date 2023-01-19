@@ -14,6 +14,7 @@ class Play extends Phaser.Scene {
     const playerZones = this.getPlayerZones(layers.playerZones);
     const player = this.createPlayer(playerZones.start); // create player and set the start coordinate by playerZone.start
     const enemies = this.createEnemies(layers.enemySpawns, layers.platformsColliers); // create enemys with layer the enemy_spwans
+    const collectables = this.createCollectables(layers.collectables);
 
     this.createEnemyColliders(enemies, {
       colliders: {
@@ -60,17 +61,26 @@ class Play extends Phaser.Scene {
   createLayers(map) {
     const titleset1 = map.getTileset('main_lev_build_1')
     const platformsColliers = map.createStaticLayer('platforms_colliders', titleset1);
-    const environment = map.createStaticLayer('environment', titleset1);
+    const environment = map.createStaticLayer('environment', titleset1).setDepth(-2);
     const platforms = map.createStaticLayer('platforms', titleset1);
     const playerZones = map.getObjectLayer('player_zones');
     const enemySpawns = map.getObjectLayer('enemy_spawns');
+    const collectables = map.getObjectLayer('collectables');
 
 
     // Make collision
     // platformsColliers.setCollisionByExclusion(-1, true); // standard code
     platformsColliers.setCollisionByProperty({ collider: true }); // Only when we set the tile with custom property
 
-    return { environment, platforms, platformsColliers, playerZones, enemySpawns }
+    return { environment, platforms, platformsColliers, playerZones, enemySpawns, collectables }
+  }
+
+  createCollectables(collectableLayer) {
+    const collectables = this.physics.add.staticGroup();
+    collectableLayer.objects.forEach((collectableO) => {
+      collectables.get(collectableO.x, collectableO.y, 'diamond').setDepth(-1);
+    });
+    return collectables
   }
 
   createPlayer(start) {
