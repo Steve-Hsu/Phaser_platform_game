@@ -26,7 +26,8 @@ class Play extends Phaser.Scene {
     this.createPlayerColliders(player, {
       colliders: {
         platformsColliers: layers.platformsColliers,
-        projectiles: enemies.getProjectiles()
+        projectiles: enemies.getProjectiles(),
+        collectables
       }
     })
     this.createEndOfLevel(playerZones.end, player);
@@ -109,10 +110,17 @@ class Play extends Phaser.Scene {
     target
       .addCollider(colliders.platformsColliers)
       .addCollider(colliders.projectiles, this.onWeaponHit)
+      .addOverlap(colliders.collectables, this.onCollect)
   }
 
   onWeaponHit(entity, source) {
     entity.takesHit(source)
+  }
+
+  onCollect(entity, collectable) {
+    // disableGameObject -> this will deativate the object, default: false
+    // hideGameObject -> this will hide the game object. Default : false
+    collectable.disableBody(true, true)
   }
 
   createEnemyColliders(targets, { colliders }) {
