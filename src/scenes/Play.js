@@ -12,6 +12,7 @@ class Play extends Phaser.Scene {
     this.config = config
   }
   create() {
+    this.score = 0
     const map = this.createMap();
     initAnims(this.anims);
     const layers = this.createLayers(map);
@@ -83,11 +84,7 @@ class Play extends Phaser.Scene {
   createCollectables(collectableLayer) {
     // const collectables = this.physics.add.staticGroup();
     const collectables = new Collectables(this).setDepth(-1);
-    collectableLayer.objects.forEach((collectableO) => {
-      // collectables.get(collectableO.x, collectableO.y, 'diamond').setDepth(-1);
-      collectables.get(collectableO.x, collectableO.y, 'diamond')
-      // collectables.add(new collectable(this, collectableO.x, collectableO.y, 'diamond'))
-    });
+    collectables.addFromLayer(collectableLayer);
 
     collectables.playAnimation('diamond-shine')
 
@@ -120,7 +117,7 @@ class Play extends Phaser.Scene {
     target
       .addCollider(colliders.platformsColliers)
       .addCollider(colliders.projectiles, this.onWeaponHit)
-      .addOverlap(colliders.collectables, this.onCollect)
+      .addOverlap(colliders.collectables, this.onCollect, this)
   }
 
   onWeaponHit(entity, source) {
@@ -128,6 +125,8 @@ class Play extends Phaser.Scene {
   }
 
   onCollect(entity, collectable) {
+    this.score += collectable.score;
+    console.log(this.score)
     // disableGameObject -> this will deativate the object, default: false
     // hideGameObject -> this will hide the game object. Default : false
     collectable.disableBody(true, true)

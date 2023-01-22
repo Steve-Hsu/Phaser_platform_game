@@ -34,7 +34,7 @@ class Snaky extends Enemy {
 
     // For setting the directoin of the fireball
     // velocity.x > 0 means walking toward right.
-    if (this.body.velocity.x > 0) {
+    if (this.body && this.body.velocity.x > 0) {
       this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT
     } else {
       this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT
