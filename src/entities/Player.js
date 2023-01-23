@@ -174,7 +174,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.bounceOff();
     const hitAnim = this.playDamageTween();
 
-    this.health -= source.damage;
+    this.health -= source.damage || source.properties.damage || 0;
     this.hp.decrease(this.health);
     // Add effect when player got hit by projectile, but when the source is enemy,
     // And the enemy don't have custom FUNC: deliversHit, so here we check first prevent error

@@ -34,7 +34,8 @@ class Play extends Phaser.Scene {
       colliders: {
         platformsColliers: layers.platformsColliers,
         projectiles: enemies.getProjectiles(),
-        collectables
+        collectables,
+        traps: layers.traps
       }
     })
     this.createEndOfLevel(playerZones.end, player);
@@ -74,13 +75,23 @@ class Play extends Phaser.Scene {
     const playerZones = map.getObjectLayer('player_zones');
     const enemySpawns = map.getObjectLayer('enemy_spawns');
     const collectables = map.getObjectLayer('collectables');
+    const traps = map.createStaticLayer('traps', titleset1)
 
 
     // Make collision
     // platformsColliers.setCollisionByExclusion(-1, true); // standard code
     platformsColliers.setCollisionByProperty({ collider: true }); // Only when we set the tile with custom property
+    traps.setCollisionByExclusion(-1);
 
-    return { environment, platforms, platformsColliers, playerZones, enemySpawns, collectables }
+    return {
+      environment,
+      platforms,
+      platformsColliers,
+      playerZones,
+      enemySpawns,
+      collectables,
+      traps
+    }
   }
 
   createCollectables(collectableLayer) {
@@ -103,7 +114,11 @@ class Play extends Phaser.Scene {
 
     spawnLayer.objects.forEach(spawnPoint => {
       // console.log(spawnPoint.properties[0].value)
-      const enemy = new enemyTypes[spawnPoint.properties[0].value](this, spawnPoint.x, spawnPoint.y);
+      const enemy = new enemyTypes[spawnPoint.properties[0].value](
+        this,
+        spawnPoint.x,
+        spawnPoint.y
+      );
       enemy.setPlatformColliders(platformsColliers)
       enemies.add(enemy)
     })
@@ -118,11 +133,12 @@ class Play extends Phaser.Scene {
   createPlayerColliders(target, { colliders }) {
     target
       .addCollider(colliders.platformsColliers)
-      .addCollider(colliders.projectiles, this.onWeaponHit)
+      .addCollider(colliders.projectiles, this.onHit)
+      .addCollider(colliders.traps, this.onHit)
       .addOverlap(colliders.collectables, this.onCollect, this)
   }
 
-  onWeaponHit(entity, source) {
+  onHit(entity, source) {
     entity.takesHit(source)
   }
 
@@ -138,8 +154,8 @@ class Play extends Phaser.Scene {
     targets
       .addCollider(colliders.platformsColliers)
       .addCollider(colliders.player, this.onPlayerCollision)
-      .addCollider(colliders.player.projectiles, this.onWeaponHit)
-      .addOverlap(colliders.player.meleeWeapon, this.onWeaponHit)
+      .addCollider(colliders.player.projectiles, this.onHit)
+      .addOverlap(colliders.player.meleeWeapon, this.onHit)
   }
 
   setupFollowupCameraOn(player) {
