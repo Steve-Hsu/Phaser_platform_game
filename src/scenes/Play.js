@@ -3,6 +3,7 @@ import Player from '../entities/Player';
 import Enemies from '../groups/Enemies';
 // import collectable from '../collectable.js/Collectable';
 import Collectables from '../groups/Collectables';
+import Hud from '../hud';
 
 import initAnims from '../anims'
 
@@ -13,6 +14,7 @@ class Play extends Phaser.Scene {
   }
   create() {
     this.score = 0
+    this.hud = new Hud(this, 0, 0);
     const map = this.createMap();
     initAnims(this.anims);
     const layers = this.createLayers(map);
@@ -126,7 +128,7 @@ class Play extends Phaser.Scene {
 
   onCollect(entity, collectable) {
     this.score += collectable.score;
-    console.log(this.score)
+    this.hud.updateScoreboard(this.score);
     // disableGameObject -> this will deativate the object, default: false
     // hideGameObject -> this will hide the game object. Default : false
     collectable.disableBody(true, true)
