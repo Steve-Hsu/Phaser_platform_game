@@ -13,7 +13,7 @@ class Play extends Phaser.Scene {
     super('PlayScene')
     this.config = config
   }
-  create() {
+  create({ gameStatus }) {
     this.score = 0
     this.hud = new Hud(this, 0, 0);
     const map = this.createMap();
@@ -39,9 +39,11 @@ class Play extends Phaser.Scene {
         traps: layers.traps
       }
     })
-    this.createGameEvents();
+
     this.createEndOfLevel(playerZones.end, player);
     this.setupFollowupCameraOn(player);
+    if (gameStatus === 'PLAYER_LOOSE') return;
+    this.createGameEvents();
 
   }
 
@@ -98,7 +100,7 @@ class Play extends Phaser.Scene {
 
   createGameEvents() {
     EventEmitter.on('PLAYER_LOOSE', () => {
-      alert('lose the game')
+      this.scene.restart({ gameStatus: 'PLAYER_LOOSE' })
     })
   }
 
