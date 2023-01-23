@@ -68,6 +68,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // Prevent player can move right or left, while being hit or sliding(crouch down)
     const { left, right, space, up } = this.cursors;
     if (this.hasBeenHit || this.isDown || !this.body) { return; };
+
+    if (this.getBounds().top > this.scene.config.height) {
+      EventEmitter.emit("PLAYER_LOOSE");
+      return;
+    }
     // This justDown value allows you to test if thie key has just been pressed down or not.
     const isSpaceJustDown = Phaser.Input.Keyboard.JustDown(space);
     const isUpJustDown = Phaser.Input.Keyboard.JustDown(up);
