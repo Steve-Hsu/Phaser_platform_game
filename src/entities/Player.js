@@ -6,6 +6,7 @@ import anims from "../mixins/anims";
 import Projectiles from "../attacks/Projectiles";
 import MeleeWeapon from "../attacks/MeleeWeapon";
 import { getTimestamp } from "../utils/functions";
+import EventEmitter from '../events/Emitter';
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
@@ -178,11 +179,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
   takesHit(source) {
     if (this.hasBeenHit) { return; }
+    this.health -= source.damage || source.properties.damage || 0;
+    if (this.health <= 0) {
+      EventEmitter.emit('PLAYER_LOOSE');
+      return;
+    }
+
     this.hasBeenHit = true;
     this.bounceOff(source);
     const hitAnim = this.playDamageTween();
 
-    this.health -= source.damage || source.properties.damage || 0;
+
     this.hp.decrease(this.health);
     // Add effect when player got hit by projectile, but when the source is enemy,
     // And the enemy don't have custom FUNC: deliversHit, so here we check first prevent error
