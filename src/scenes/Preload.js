@@ -7,6 +7,7 @@ class Preload extends Phaser.Scene {
   preload() {
     this.load.image('tiles-1', 'assets/main_lev_build_1.png');
     this.load.image('tiles-2', 'assets/main_lev_build_2.png');
+    this.load.image('bg-spikes-dark', 'assets/background03_super_dark.png');
     this.load.image('iceball-1', 'assets/weapons/iceball_001.png')
     this.load.image('iceball-2', 'assets/weapons/iceball_002.png')
     this.load.image('fireball-1', 'assets/weapons/improved_fireball_001.png');

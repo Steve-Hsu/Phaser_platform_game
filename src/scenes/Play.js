@@ -24,6 +24,8 @@ class Play extends Phaser.Scene {
     const enemies = this.createEnemies(layers.enemySpawns, layers.platformsColliers); // create enemys with layer the enemy_spwans
     const collectables = this.createCollectables(layers.collectables);
 
+    this.createBG(map);
+
     this.createEnemyColliders(enemies, {
       colliders: {
         platformsColliers: layers.platformsColliers,
@@ -80,8 +82,6 @@ class Play extends Phaser.Scene {
     const enemySpawns = map.getObjectLayer('enemy_spawns');
     const collectables = map.getObjectLayer('collectables');
     const traps = map.createStaticLayer('traps', titleset1)
-
-
     // Make collision
     // platformsColliers.setCollisionByExclusion(-1, true); // standard code
     platformsColliers.setCollisionByProperty({ collider: true }); // Only when we set the tile with custom property
@@ -96,6 +96,14 @@ class Play extends Phaser.Scene {
       collectables,
       traps
     }
+  }
+
+  createBG(map) {
+    const bgObject = map.getObjectLayer('distance_BG').objects[0];
+    this.add.tileSprite(bgObject.x, bgObject.y, this.config.width, bgObject.height, 'bg-spikes-dark')
+      .setOrigin(0, 1)
+      .setDepth(-10)
+      .setScrollFactor(0, 1); // 0 = flase, 1 = true, x, y, 
   }
 
   createGameEvents() {
