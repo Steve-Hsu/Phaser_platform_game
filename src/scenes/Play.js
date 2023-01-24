@@ -76,17 +76,17 @@ class Play extends Phaser.Scene {
 
   createLayers(map) {
     const titleset1 = map.getTileset('main_lev_build_1')
-    const platformsColliers = map.createStaticLayer('platforms_colliders', titleset1);
+    const platformsColliers = map.createLayer('platforms_colliders', titleset1);
 
     const titlesetBG = map.getTileset('bg_dark')
-    map.createStaticLayer('distance', titlesetBG).setDepth(0);
+    map.createLayer('distance', titlesetBG).setDepth(0);
 
-    const environment = map.createStaticLayer('environment', titleset1).setDepth(-2);
-    const platforms = map.createStaticLayer('platforms', titleset1);
+    const environment = map.createLayer('environment', titleset1).setDepth(-2);
+    const platforms = map.createLayer('platforms', titleset1);
     const playerZones = map.getObjectLayer('player_zones');
     const enemySpawns = map.getObjectLayer('enemy_spawns');
     const collectables = map.getObjectLayer('collectables');
-    const traps = map.createStaticLayer('traps', titleset1)
+    const traps = map.createLayer('traps', titleset1)
     // Make collision
     // platformsColliers.setCollisionByExclusion(-1, true); // standard code
     platformsColliers.setCollisionByProperty({ collider: true }); // Only when we set the tile with custom property
