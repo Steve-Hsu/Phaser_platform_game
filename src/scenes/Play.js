@@ -70,12 +70,17 @@ class Play extends Phaser.Scene {
   createMap() {
     const map = this.make.tilemap({ key: 'map' });
     map.addTilesetImage('main_lev_build_1', 'tiles-1');
+    map.addTilesetImage('bg_dark', 'bg-middle');
     return map
   }
 
   createLayers(map) {
     const titleset1 = map.getTileset('main_lev_build_1')
     const platformsColliers = map.createStaticLayer('platforms_colliders', titleset1);
+
+    const titlesetBG = map.getTileset('bg_dark')
+    map.createStaticLayer('distance', titlesetBG).setDepth(0);
+
     const environment = map.createStaticLayer('environment', titleset1).setDepth(-2);
     const platforms = map.createStaticLayer('platforms', titleset1);
     const playerZones = map.getObjectLayer('player_zones');
@@ -100,9 +105,14 @@ class Play extends Phaser.Scene {
 
   createBG(map) {
     const bgObject = map.getObjectLayer('distance_BG').objects[0];
-    this.add.tileSprite(bgObject.x, bgObject.y, this.config.width, bgObject.height, 'bg-spikes-dark')
+    this.add.tileSprite(bgObject.x, bgObject.y, this.config.width, 180 * 2, 'bg-spikes-dark')
       .setOrigin(0, 1)
       .setDepth(-10)
+      .setScrollFactor(0, 1); // 0 = flase, 1 = true, x, y, 
+
+    this.add.tileSprite(0, 0, this.config.width, bgObject.height, 'sky-play')
+      .setOrigin(0, 0)
+      .setDepth(-11)
       .setScrollFactor(0, 1); // 0 = flase, 1 = true, x, y, 
   }
 
