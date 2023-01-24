@@ -24,7 +24,8 @@ class Preload extends Phaser.Scene {
     this.load.image('diamond-5', 'assets/collectables/diamond_big_05.png');
     this.load.image('diamond-6', 'assets/collectables/diamond_big_06.png');
 
-    this.load.tilemapTiledJSON('map', 'assets/crystal_world_map.json');
+    this.load.tilemapTiledJSON('level_1', 'assets/crystal_world_map_Level_1.json');
+    this.load.tilemapTiledJSON('level_2', 'assets/crystal_world_map_Level_2.json');
 
     this.load.spritesheet('player', 'assets/player/move_sprite_1.png', {
       frameWidth: 32, frameHeight: 38, spacing: 32
@@ -53,10 +54,20 @@ class Preload extends Phaser.Scene {
     this.load.spritesheet('sword-default', 'assets/weapons/sword_sheet_1.png', {
       frameWidth: 52, frameHeight: 32, spacing: 16
     })
+
+    this.load.once('complete', () => {
+      this.startGame();
+    })
   }
-  create() {
+
+  startGame() {
+    this.registry.set('level', 1);
     this.scene.start('PlayScene')
   }
+
+  // create() {
+  //   this.scene.start('PlayScene')
+  // }
 }
 
 export default Preload;

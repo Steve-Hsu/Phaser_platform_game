@@ -68,7 +68,7 @@ class Play extends Phaser.Scene {
   }
 
   createMap() {
-    const map = this.make.tilemap({ key: 'map' });
+    const map = this.make.tilemap({ key: `level_${this.getCurrentLevel()}` });
     map.addTilesetImage('main_lev_build_1', 'tiles-1');
     map.addTilesetImage('bg_dark', 'bg-middle');
     return map
@@ -79,7 +79,7 @@ class Play extends Phaser.Scene {
     const platformsColliers = map.createLayer('platforms_colliders', titleset1);
 
     const titlesetBG = map.getTileset('bg_dark')
-    map.createLayer('distance', titlesetBG).setDepth(0);
+    map.createLayer('distance', titlesetBG).setDepth(-12);
 
     const environment = map.createLayer('environment', titleset1).setDepth(-2);
     const platforms = map.createLayer('platforms', titleset1);
@@ -200,6 +200,11 @@ class Play extends Phaser.Scene {
       end: playerZones.find(zone => zone.name === 'EndPoint')
     }
   }
+
+  getCurrentLevel() {
+    return this.registry.get('level') || 1;
+  }
+
   createEndOfLevel(end, player) {
     const endOfLevel = this.physics.add.sprite(end.x, end.y, 'end')
       .setAlpha(0)
@@ -208,7 +213,9 @@ class Play extends Phaser.Scene {
 
     const eolOverlap = this.physics.add.overlap(player, endOfLevel, () => {
       eolOverlap.active = false;
-      console.log('Player has won')
+      // Go to next level
+      this.registry.inc('level', 1);
+      this.scene.restart({ gameStatus: 'LEVEL_COMPLETED' })
     })
   }
 
