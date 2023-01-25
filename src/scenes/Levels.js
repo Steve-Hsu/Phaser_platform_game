@@ -1,18 +1,27 @@
 
 import BaseScene from "./BaseScene";
 
-class MenuScene extends BaseScene {
+class LevelScene extends BaseScene {
   constructor(config) {
-    super('MenuScene', config);
+    super('LevelScene', { ...config, canGoBack: true });
     this.menu = [
-      { scene: 'PlayScene', text: 'Play' },
-      { scene: 'LevelScene', text: 'Levels' },
-      { scene: null, text: 'Exit' }
+      { scene: 'PlayScene', text: 'Level 1' },
+      { scene: 'PlayScene', text: 'Level 2' }
     ]
   }
 
+
   create() {
     super.create();
+    this.menu = [];
+    const levels = this.registry.get('unlocked-levels');
+
+    for (let i = 1; i <= levels; i++) {
+      this.menu.push({
+        scene: 'PlayScene', text: `Level ${i}`, level: i
+      })
+    }
+
     this.createMenu(this.menu, this.setupMenuEvents.bind(this));
   }
 
@@ -27,6 +36,12 @@ class MenuScene extends BaseScene {
       textGO.setStyle({ fill: '#713E01' })
     })
     textGO.on('pointerup', () => {
+
+      if (menuItem.scene) {
+        this.registry.set('level', menuItem.level)
+        this.scene.start(menuItem.scene)
+      }
+
       menuItem.scene && this.scene.start(menuItem.scene);
       if (menuItem.text === 'Exit') {
         this.game.destroy(true);
@@ -35,4 +50,4 @@ class MenuScene extends BaseScene {
   }
 }
 
-export default MenuScene;
+export default LevelScene;

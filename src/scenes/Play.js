@@ -42,6 +42,7 @@ class Play extends Phaser.Scene {
       }
     })
 
+    this.createBackButton();
     this.createEndOfLevel(playerZones.end, player);
     this.setupFollowupCameraOn(player);
     if (gameStatus === 'PLAYER_LOOSE') return;
@@ -114,6 +115,22 @@ class Play extends Phaser.Scene {
       .setOrigin(0, 0)
       .setDepth(-11)
       .setScrollFactor(0, 1); // 0 = flase, 1 = true, x, y, 
+  }
+
+  createBackButton() {
+    const btn = this.add.image(
+      this.config.rightBottomCorner.x,
+      this.config.rightBottomCorner.y,
+      'back'
+    )
+      .setOrigin(1)
+      .setScrollFactor(0)
+      .setScale(2)
+      .setInteractive()
+
+    btn.on('pointerup', () => {
+      this.scene.start('MenuScene')
+    })
   }
 
   createGameEvents() {
