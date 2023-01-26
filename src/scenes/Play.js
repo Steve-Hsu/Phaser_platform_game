@@ -26,6 +26,8 @@ class Play extends Phaser.Scene {
     const enemies = this.createEnemies(layers.enemySpawns, layers.platformsColliers); // create enemys with layer the enemy_spwans
     const collectables = this.createCollectables(layers.collectables);
 
+    this.collectSound = this.sound.add('coin-pickup', { volume: 0.2 })
+
     this.createBG(map);
 
     this.createEnemyColliders(enemies, {
@@ -199,6 +201,7 @@ class Play extends Phaser.Scene {
     this.hud.updateScoreboard(this.score);
     // disableGameObject -> this will deativate the object, default: false
     // hideGameObject -> this will hide the game object. Default : false
+    this.collectSound.play();
     collectable.disableBody(true, true)
   }
 

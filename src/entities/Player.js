@@ -64,6 +64,19 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     initAnimations(this.scene.anims);
     this.handleAttacks();
     this.handleMovement();
+
+    // For running sound
+    this.running = false
+    this.scene.time.addEvent({
+      delay: 300,
+      repeat: -1,
+      callbackScope: this,
+      callback: () => {
+        if (this.running) {
+          this.stepSound.play();
+        }
+      }
+    })
   }
 
   initEvents() {
@@ -71,6 +84,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
+    this.running = false
     // Prevent player can move right or left, while being hit or sliding(crouch down)
     const { left, right, space, up } = this.cursors;
     if (this.hasBeenHit || this.isDown || !this.body) { return; };
@@ -114,14 +128,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // Don't play it again if it's already playing
     // Second value (true) -> igonreIfPlaying
     if (onFloor) {
+      // For running sound
+      if (left.isDown || right.isDown) {
+        this.running = true
+      }
+
       this.jumpCount = 0
       this.body.velocity.x !== 0 ?
         this.play('run', true) : this.play('idle', true);
     } else {
       this.play('jump', true)
     }
-
-
   }
 
   handleAttacks() {
