@@ -34,6 +34,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.bounceVelocity = 250;
     this.cursors = this.scene.input.keyboard.createCursorKeys();
 
+    //Sound Effect
+    this.jumpSound = this.scene.sound.add('jump', { volume: 0.2 });
+    this.projectileSound = this.scene.sound.add('projectile-launch', { volume: 0.2 });
+    this.stepSound = this.scene.sound.add('step', { volume: 0.2 });
+    this.swipeSound = this.scene.sound.add('swipe', { volume: 0.2 });
+
     this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
     this.projectiles = new Projectiles(this.scene, 'iceball-1');
     this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, 'sword-default');
@@ -91,6 +97,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
     if ((isSpaceJustDown || isUpJustDown) && (onFloor || this.jumpCount < this.consecutiveJumps)) {
       // Becase we've set the body of the player with gravity, so after space up, player will fall into ground again
+      this.jumpSound.play();
       this.setVelocityY(-this.playerSpeed * 2)
       this.jumpCount++
     }
@@ -120,6 +127,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   handleAttacks() {
     this.scene.input.keyboard.on('keydown-Q', () => {
 
+      this.projectileSound.play();
+
       this.play('throw', true);
       this.projectiles.fireProjectile(this, 'iceball');
       this.isThrow = true
@@ -130,6 +139,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       if (this.timeFromLastSwing
         && this.timeFromLastSwing + this.meleeWeapon.attackSpeed > getTimestamp()) return;
       console.log("melee");
+
+      this.swipeSound.play();
       this.play('throw', true);
       this.isThrow = true
       this.meleeWeapon.swing(this);
