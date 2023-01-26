@@ -16,6 +16,8 @@ class Play extends Phaser.Scene {
   create({ gameStatus }) {
     this.score = 0
     this.hud = new Hud(this, 0, 0);
+    this.playBgMusic();
+
     const map = this.createMap();
     initAnims(this.anims);
     const layers = this.createLayers(map);
@@ -66,6 +68,11 @@ class Play extends Phaser.Scene {
 
     this.drawDebug(layer)
     this.plotting = false;
+  }
+
+  playBgMusic() {
+    if (this.sound.get('theme')) return;
+    this.sound.add('theme', { loop: true, volume: 0.03 }).play()
   }
 
   createMap() {
